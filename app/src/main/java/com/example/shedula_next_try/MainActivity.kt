@@ -12,14 +12,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LoginManager()
+            EmployeeScreen()
         }
     }
 }
 @Preview
 @Composable
-fun PreviewLoginManager() {
-    LoginManager()
+fun PreviewEmployeeScreen() {
+    EmployeeScreen()
 }
 
 
