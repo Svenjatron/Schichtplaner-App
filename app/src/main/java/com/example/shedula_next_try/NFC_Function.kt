@@ -60,6 +60,6 @@ class MainActivity : AppCompatActivity(), CreateNdefMessageCallback {
 
     override fun createNdefMessage(event: NfcEvent): NdefMessage {
 
-        return NdefMessage(NdefRecord.createTextRecord("Punch In/Out", "Thanks it worked"))
+        return NdefMessage(NdefRecord.createTextRecord("Punch In/Out", "Worked!"))
     }
 }
