@@ -1,4 +1,5 @@
 import android.nfc.NdefMessage
+import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.nfc.NfcEvent
 import android.nfc.NfcAdapter.CreateNdefMessageCallback
@@ -6,6 +7,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.shedula_next_try.R
 import java.text.SimpleDateFormat
 import java.util.*
 
