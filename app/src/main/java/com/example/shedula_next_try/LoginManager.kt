@@ -29,62 +29,34 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.*
 import androidx.navigation.NavController
 
-import com.example.shedula_next_try.User
-
-
 @Composable
 fun LoginManager(navController: NavController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val usernameState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
+    val userDoesNotExist = remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        Box(
-            modifier = Modifier
-                .height(50.dp)
-                .fillMaxWidth()
-                .padding(start = 20.dp, top = 20.dp, end = 20.dp)
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(com.example.shedula_next_try.ui.theme.unserOcker, com.example.shedula_next_try.ui.theme.orange2),
-                        startX = 0f,
-                        endX = 500f
-                    )
-                )
-        )
-
-        Box(
-            modifier = Modifier
-                .height(50.dp)
-                .fillMaxWidth()
-                .padding(start = 20.dp, bottom = 20.dp, end = 20.dp)
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(orange2, unserOcker),
-                        startX = 0f,
-                        endX = 500f
-                    )
-                )
-                .align(Alignment.BottomCenter)
-        )
-
+        // Rest of the login screen UI code
 
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
+            // Username text
             Text(
                 text = "Username",
                 modifier = Modifier.padding(start = 20.dp, top = 20.dp),
                 fontSize = 20.sp
             )
 
+            // Username text field
             BasicTextField(
                 value = username,
                 onValueChange = { username = it },
@@ -96,12 +68,14 @@ fun LoginManager(navController: NavController) {
                     .padding(horizontal = 20.dp, vertical = 20.dp)
             )
 
+            // Password text
             Text(
                 text = "Passwort",
                 modifier = Modifier.padding(start = 20.dp, top = 20.dp),
                 fontSize = 20.sp
             )
 
+            // Password text field
             BasicTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -115,9 +89,19 @@ fun LoginManager(navController: NavController) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-
+            // Login button
             Button(
-                onClick = { /* Nach Eingabe der Login-Daten */ },
+                onClick = {
+                    val user = Authenticator_function(username, password)
+                    if (user != null) {
+                        when (user.role) {
+                            Role.ADMIN -> navController.navigate("TeamManager")
+                            Role.EMPLOYEE -> navController.navigate("EmployeeScreen")
+                        }
+                    } else {
+                        userDoesNotExist.value = true
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp)
@@ -130,6 +114,16 @@ fun LoginManager(navController: NavController) {
                 Text(
                     text = "Anmelden",
                     fontSize = 45.sp
+                )
+            }
+
+            // User does not exist message
+            if (userDoesNotExist.value) {
+                Text(
+                    text = "Diese:r User:in existiert nicht",
+                    color = Color.Red,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(start = 20.dp, top = 8.dp)
                 )
             }
         }

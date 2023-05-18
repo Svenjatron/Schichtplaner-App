@@ -38,6 +38,9 @@ fun ShedulaNextTryApp() {
         composable("TeamManager") {
             TeamManager(navController)
         }
+        composable("EmployeeScreen") {
+            TeamManager(navController)
+        }
     }
 }
 
