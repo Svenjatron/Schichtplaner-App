@@ -18,6 +18,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+
 
 val leichtesGrau = Color(0xFFF2F2F2)
 val unserSchwarz = Color(0xFF000000)
@@ -27,7 +29,7 @@ val orange1 = Color(0XFFF24405)
 val orange2 = Color(0XFFF26716)
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -40,7 +42,7 @@ fun LoginScreen() {
                 .padding(start = 20.dp, top = 20.dp, end = 20.dp)
                 .background(
                     brush = Brush.horizontalGradient(
-                        colors = listOf(orange2, unserOcker),
+                        colors = listOf(com.example.shedula_next_try.ui.theme.orange2, com.example.shedula_next_try.ui.theme.unserOcker),
                         startX = 0f,
                         endX = 500f
                     )
@@ -54,7 +56,7 @@ fun LoginScreen() {
                 .padding(start = 20.dp, bottom = 20.dp, end = 20.dp)
                 .background(
                     brush = Brush.horizontalGradient(
-                        colors = listOf(unserOcker, orange2),
+                        colors = listOf(com.example.shedula_next_try.ui.theme.unserSchwarz, com.example.shedula_next_try.ui.theme.orange2),
                         startX = 0f,
                         endX = 500f
                     )
@@ -68,35 +70,35 @@ fun LoginScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(
-                onClick = { /* Zur Login-Seite */ },
+                onClick = { navController.navigate("LoginManager") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp)
                     .height(130.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = leichtesGrau,
-                    contentColor = unserSchwarz
+                    containerColor = com.example.shedula_next_try.ui.theme.leichtesGrau,
+                    contentColor = com.example.shedula_next_try.ui.theme.unserSchwarz
                 )
             ) {
                 Text(
                     text = "Login",
-                    fontSize = 50.sp
+                    fontSize = 40.sp
                 )
             }
             Button(
-                onClick = { /* Zur Ersteinrichtung */ },
+                onClick = { navController.navigate("TeamManager") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp)
                     .height(130.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = leichtesGrau,
-                    contentColor = unserSchwarz
+                    containerColor = com.example.shedula_next_try.ui.theme.leichtesGrau,
+                    contentColor = com.example.shedula_next_try.ui.theme.unserSchwarz
                 )
             ) {
                 Text(
-                    text = "Team anlegen",
-                    fontSize = 45.sp
+                    text = "Ersteinrichtung",
+                    fontSize = 36.sp
                 )
             }
         }

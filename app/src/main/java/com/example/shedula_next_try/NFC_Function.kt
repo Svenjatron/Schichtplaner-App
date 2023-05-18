@@ -21,11 +21,11 @@ class MainActivity : AppCompatActivity(), CreateNdefMessageCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        ////setContentView(R.layout.activity_main)
 
-        btnPunchIn = findViewById(R.id.btnPunchIn)
-        btnPunchOut = findViewById(R.id.btnPunchOut)
-        tvTimeDifference = findViewById(R.id.tvTimeDifference)
+        ////btnPunchIn = findViewById(R.id.btnPunchIn)
+        ////btnPunchOut = findViewById(R.id.btnPunchOut)
+        ////tvTimeDifference = findViewById(R.id.tvTimeDifference)
 
         btnPunchIn.setOnClickListener {
             punchInTime = System.currentTimeMillis()

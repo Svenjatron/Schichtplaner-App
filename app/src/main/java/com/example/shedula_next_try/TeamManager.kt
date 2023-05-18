@@ -33,7 +33,7 @@ import com.example.shedula_next_try.User
 
 
 @Composable
-fun LoginManager(navController: NavController) {
+fun TeamManager(navController: NavController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val usernameState = remember { mutableStateOf("") }
@@ -41,7 +41,7 @@ fun LoginManager(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(com.example.shedula_next_try.ui.theme.unserSchwarz)
     ) {
         Box(
             modifier = Modifier
@@ -78,11 +78,33 @@ fun LoginManager(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Text(
+                text = "Teammanager anlegen",
+                modifier = Modifier.padding(start = 20.dp, top = 20.dp),
+                fontSize = 30.sp,
+                color = Color.White
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+                    .height(80.dp)
+                    .background(color = leichtesGrau)
+            ) {
+                Text(
+                    text = "Bitte zur Team-Erstellung einen Teammanager registrieren:",
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
 
             Text(
                 text = "Username",
                 modifier = Modifier.padding(start = 20.dp, top = 20.dp),
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                color = Color.White
             )
 
             BasicTextField(
@@ -99,7 +121,8 @@ fun LoginManager(navController: NavController) {
             Text(
                 text = "Passwort",
                 modifier = Modifier.padding(start = 20.dp, top = 20.dp),
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                color = Color.White
             )
 
             BasicTextField(
@@ -112,8 +135,6 @@ fun LoginManager(navController: NavController) {
                     .background(leichtesGrau, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 20.dp, vertical = 20.dp)
             )
-
-            Spacer(modifier = Modifier.height(32.dp))
 
 
             Button(
