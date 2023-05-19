@@ -46,8 +46,37 @@ fun LoginManager(navController: NavController) {
             .fillMaxSize()
             .background(Color.White)
             .offset(y = offsetY.value)
+
     )
     {
+        Box(
+            modifier = Modifier
+                .height(50.dp)
+                .fillMaxWidth()
+                .padding(start = 20.dp, top = 20.dp, end = 20.dp)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(com.example.shedula_next_try.ui.theme.orange2, com.example.shedula_next_try.ui.theme.unserOcker),
+                        startX = 0f,
+                        endX = 500f
+                    )
+                )
+        )
+
+        Box(
+            modifier = Modifier
+                .height(50.dp)
+                .fillMaxWidth()
+                .padding(start = 20.dp, bottom = 20.dp, end = 20.dp)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(com.example.shedula_next_try.ui.theme.unserOcker, com.example.shedula_next_try.ui.theme.orange2),
+                        startX = 0f,
+                        endX = 500f
+                    )
+                )
+                .align(Alignment.BottomCenter)
+        )
 
         Column(
 
@@ -131,14 +160,15 @@ fun LoginManager(navController: NavController) {
                     fontSize = 40.sp
                 )
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+
             // Home Button
             Button(
                 onClick = {
                     navController.navigate("LoginScreen")
                 },
                 modifier = Modifier
-                    .width(120.dp)
+                    .width(180.dp)
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = com.example.shedula_next_try.ui.theme.leichtesGrau,
@@ -146,7 +176,7 @@ fun LoginManager(navController: NavController) {
                 )
             ) {
                 Text(
-                    text = "Home",
+                    text = "Zurück",
                     fontSize = 16.sp
                 )
             }

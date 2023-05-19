@@ -77,7 +77,7 @@ fun ZeiterfassungsScreen(navController: NavController) {
                 )
             }
             Button(
-                onClick = { /* Zur Login-Seite */ },
+                onClick = { navController.navigate("NFCKontakt1Screen") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp)
@@ -92,20 +92,24 @@ fun ZeiterfassungsScreen(navController: NavController) {
                     fontSize = 28.sp
                 )
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             Button(
-                onClick = { /* Zur Ersteinrichtung */ },
+                onClick = {
+                    navController.navigate("EmployeeScreen")
+                },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-                    .height(130.dp),
+                    .width(180.dp)
+                    .height(50.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = com.example.shedula_next_try.ui.theme.orange1,
-                    contentColor = com.example.shedula_next_try.ui.theme.unserSchwarz
+                    containerColor = com.example.shedula_next_try.ui.theme.leichtesGrau,
+                    contentColor = unserSchwarz
                 )
             ) {
                 Text(
-                    text = "Zeiterfassung stoppen",
-                    fontSize = 28.sp
+                    text = "Zurück",
+                    fontSize = 16.sp
                 )
             }
         }

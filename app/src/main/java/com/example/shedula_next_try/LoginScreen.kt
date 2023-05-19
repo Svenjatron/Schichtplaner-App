@@ -56,7 +56,7 @@ fun LoginScreen(navController: NavController) {
                 .padding(start = 20.dp, bottom = 20.dp, end = 20.dp)
                 .background(
                     brush = Brush.horizontalGradient(
-                        colors = listOf(com.example.shedula_next_try.ui.theme.unserSchwarz, com.example.shedula_next_try.ui.theme.orange2),
+                        colors = listOf(com.example.shedula_next_try.ui.theme.unserOcker, com.example.shedula_next_try.ui.theme.orange2),
                         startX = 0f,
                         endX = 500f
                     )

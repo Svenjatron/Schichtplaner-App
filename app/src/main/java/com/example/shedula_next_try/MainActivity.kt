@@ -41,6 +41,12 @@ fun ShedulaNextTryApp() {
         composable("EmployeeScreen") {
             EmployeeScreen(navController)
         }
+        composable("ZeiterfassungsScreen") {
+            ZeiterfassungsScreen(navController)
+        }
+        composable("NFCKontakt1Screen") {
+            NFCKontakt1Screen(navController)
+        }
     }
 }
 
