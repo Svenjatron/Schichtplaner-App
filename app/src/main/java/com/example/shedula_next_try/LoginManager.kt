@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.*
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.navigation.NavController
 
 @Composable
@@ -36,27 +37,28 @@ fun LoginManager(navController: NavController) {
     val usernameState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
     val userDoesNotExist = remember { mutableStateOf(false) }
+    val offsetY = remember { mutableStateOf(0.dp) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .offset(y = offsetY.value)
     ) {
-        // Rest of the login screen UI code
 
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            // Username text
+            // Username Einblende Textfeld
             Text(
                 text = "Username",
                 modifier = Modifier.padding(start = 20.dp, top = 20.dp),
                 fontSize = 20.sp
             )
 
-            // Username text field
+            // Username eingeben Textfeld
             BasicTextField(
                 value = username,
                 onValueChange = { username = it },
@@ -68,14 +70,14 @@ fun LoginManager(navController: NavController) {
                     .padding(horizontal = 20.dp, vertical = 20.dp)
             )
 
-            // Password text
+            // Password Einblende Textfeld
             Text(
                 text = "Passwort",
                 modifier = Modifier.padding(start = 20.dp, top = 20.dp),
                 fontSize = 20.sp
             )
 
-            // Password text field
+            // Password eingeben Textfeld
             BasicTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -85,11 +87,18 @@ fun LoginManager(navController: NavController) {
                     .padding(16.dp)
                     .background(leichtesGrau, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 20.dp, vertical = 20.dp)
+                    .onFocusChanged { focusState ->
+                        if (focusState.isFocused) {
+                            offsetY.value = (-140).dp // Move the screen down by 80 pixels
+                        } else {
+                            offsetY.value = 0.dp // Reset the offset when focus is lost
+                        }
+                    }
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Login button
+            // Login Button mit Admin, Employee Splitter
             Button(
                 onClick = {
                     val user = Authenticator_function(username, password)
@@ -117,7 +126,7 @@ fun LoginManager(navController: NavController) {
                 )
             }
 
-            // User does not exist message
+            // User nicht da
             if (userDoesNotExist.value) {
                 Text(
                     text = "Diese:r User:in existiert nicht",
