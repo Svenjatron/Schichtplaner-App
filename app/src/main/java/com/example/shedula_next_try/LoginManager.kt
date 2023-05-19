@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.*
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.navigation.NavController
+import androidx.compose.material3.IconButton
+
 
 @Composable
 fun LoginManager(navController: NavController) {
@@ -44,13 +46,16 @@ fun LoginManager(navController: NavController) {
             .fillMaxSize()
             .background(Color.White)
             .offset(y = offsetY.value)
-    ) {
+    )
+    {
 
         Column(
+
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+
             // Username Einblende Textfeld
             Text(
                 text = "Username",
@@ -89,7 +94,7 @@ fun LoginManager(navController: NavController) {
                     .padding(horizontal = 20.dp, vertical = 20.dp)
                     .onFocusChanged { focusState ->
                         if (focusState.isFocused) {
-                            offsetY.value = (-140).dp // Move the screen down by 80 pixels
+                            offsetY.value = (-150).dp // Move the screen down by 80 pixels
                         } else {
                             offsetY.value = 0.dp // Reset the offset when focus is lost
                         }
@@ -106,6 +111,7 @@ fun LoginManager(navController: NavController) {
                         when (user.role) {
                             Role.ADMIN -> navController.navigate("TeamManager")
                             Role.EMPLOYEE -> navController.navigate("EmployeeScreen")
+                            else -> userDoesNotExist.value = true
                         }
                     } else {
                         userDoesNotExist.value = true
@@ -114,25 +120,46 @@ fun LoginManager(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-                    .height(130.dp),
+                    .height(100.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = leichtesGrau,
+                    containerColor = com.example.shedula_next_try.ui.theme.unserOcker,
                     contentColor = unserSchwarz
                 )
             ) {
                 Text(
                     text = "Anmelden",
-                    fontSize = 45.sp
+                    fontSize = 40.sp
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            // Home Button
+            Button(
+                onClick = {
+                    navController.navigate("LoginScreen")
+                },
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = com.example.shedula_next_try.ui.theme.leichtesGrau,
+                    contentColor = unserSchwarz
+                )
+            ) {
+                Text(
+                    text = "Home",
+                    fontSize = 16.sp
                 )
             }
 
             // User nicht da
             if (userDoesNotExist.value) {
                 Text(
-                    text = "Diese:r User:in existiert nicht",
-                    color = Color.Red,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(start = 20.dp, top = 8.dp)
+                    text = "Username oder Passwort falsch!",
+                    color = com.example.shedula_next_try.ui.theme.orange1,
+                    fontSize = 20.sp,
+                    modifier = Modifier
+                        .padding(start = 20.dp, top = 8.dp, bottom = 60.dp)
+
                 )
             }
         }
