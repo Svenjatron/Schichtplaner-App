@@ -47,6 +47,12 @@ fun ShedulaNextTryApp() {
         composable("NFCKontakt1Screen") {
             NFCKontakt1Screen(navController)
         }
+        composable("ErsteinrichtungScreen") {
+            ErsteinrichtungScreen(navController)
+        }
+        composable("ZEStopScreen") {
+            ZEStopScreen(navController)
+        }
     }
 }
 

@@ -69,12 +69,22 @@ fun ZeiterfassungsScreen(navController: NavController) {
                     .height(180.dp)
                     .background(color = leichtesGrau)
             ) {
+
+                // Hier Abfrage ob Zeiterfassung aktiviert wurde
+
                 Text(
-                    text = "Um die Arbeitszeit aufzuzeichnen, drücken Sie bitte den entsprechenden Button, halten Sie dann Ihr Handy vor den NFC-Tag, um die Zeiterfassung zu starten oder zu beenden.",
+                    text = "Um die Arbeitszeit aufzuzeichnen, drücken Sie bitte den entsprechenden Button, halten Sie dann Ihr Handy vor den NFC-Tag, um die Zeiterfassung zu starten.",
                     fontSize = 21.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)
                 )
+
+                // Text(
+                //    text = "Um die Zeiterfassung zu beenden, klicken Sie bitte auf den entsprechenden Button und halten Sie Ihr Handy erneut vor den NFC-Tag.",
+                //    fontSize = 21.sp,
+                //    textAlign = TextAlign.Center,
+                //    modifier = Modifier.padding(16.dp)
+                // )
             }
             Button(
                 onClick = { navController.navigate("NFCKontakt1Screen") },
@@ -87,10 +97,18 @@ fun ZeiterfassungsScreen(navController: NavController) {
                     contentColor = com.example.shedula_next_try.ui.theme.unserSchwarz
                 )
             ) {
+
+                // Hier Abfrage ob Zeiterfassung aktiviert wurde
+
                 Text(
                     text = "Zeiterfassung starten",
                     fontSize = 28.sp
                 )
+                // Text(
+                //    text = "Zeiterfassung stoppen",
+                //    fontSize = 28.sp
+                // )
+
             }
 
             Spacer(modifier = Modifier.height(20.dp))
