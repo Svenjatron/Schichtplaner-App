@@ -7,5 +7,4 @@ enum class Role {
 
 class User(val username: String, val password: String, val role: Role, val workhours : Double){
 
-
 }

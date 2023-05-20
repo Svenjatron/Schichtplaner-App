@@ -35,23 +35,23 @@ fun ShedulaNextTryApp() {
         composable("LoginManager") {
             LoginManager(navController)
         }
+        composable("ErsteinrichtungScreen") {
+            ErsteinrichtungScreen(navController)
+        }
         composable("TeamManager") {
             TeamManager(navController)
         }
         composable("EmployeeScreen") {
             EmployeeScreen(navController)
         }
+        composable("AdminScreen") {
+            AdminScreen(navController)
+        }
         composable("ZeiterfassungsScreen") {
             ZeiterfassungsScreen(navController)
         }
         composable("NFCKontakt1Screen") {
             NFCKontakt1Screen(navController)
-        }
-        composable("ErsteinrichtungScreen") {
-            ErsteinrichtungScreen(navController)
-        }
-        composable("ZEStopScreen") {
-            ZEStopScreen(navController)
         }
     }
 }

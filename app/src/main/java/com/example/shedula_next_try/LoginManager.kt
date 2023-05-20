@@ -138,7 +138,7 @@ fun LoginManager(navController: NavController) {
                     val user = Authenticator_function(username, password)
                     if (user != null) {
                         when (user.role) {
-                            Role.ADMIN -> navController.navigate("TeamManager")
+                            Role.ADMIN -> navController.navigate("AdminScreen")
                             Role.EMPLOYEE -> navController.navigate("EmployeeScreen")
                             else -> userDoesNotExist.value = true
                         }
