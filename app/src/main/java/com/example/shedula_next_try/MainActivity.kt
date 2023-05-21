@@ -1,5 +1,4 @@
 package com.example.shedula_next_try
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -53,6 +52,12 @@ fun ShedulaNextTryApp() {
         composable("NFCKontakt1Screen") {
             NFCKontakt1Screen(navController)
         }
+        composable("KalenderScreen") {
+            KalenderScreen(navController)
+        }
+
+
+
     }
 }
 

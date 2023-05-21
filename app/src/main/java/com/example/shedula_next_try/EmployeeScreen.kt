@@ -62,7 +62,7 @@ fun EmployeeScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(
-                onClick = { /* Zur Login-Seite */ },
+                onClick = {navController.navigate("KalenderScreen")},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp)
