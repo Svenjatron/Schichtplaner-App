@@ -1,4 +1,4 @@
-package com.example.shedula_next_try
+package com.example.shedula_next_try.View
 
 import android.view.Gravity
 import android.widget.CalendarView

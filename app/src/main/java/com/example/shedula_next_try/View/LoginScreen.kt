@@ -1,7 +1,5 @@
-package com.example.shedula_next_try
+package com.example.shedula_next_try.View
 
-import android.graphics.fonts.FontFamily
-import android.graphics.fonts.FontStyle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.Image
@@ -17,14 +15,21 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+
+val leichtesGrau = Color(0xFFF2F2F2)
+val unserSchwarz = Color(0xFF000000)
+val unserOcker = Color(0xFFF2CF66)
+val weiss = Color(0XFFFFFFFF)
+val orange1 = Color(0XFFF24405)
+val orange2 = Color(0XFFF26716)
+
 @Composable
-fun NFCKontakt1Screen(navController: NavController) {
+fun LoginScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -64,33 +69,40 @@ fun NFCKontakt1Screen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = "Bitte jetzt das Handy an den NFC-Tag halten",
-                fontSize = 30.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-
             Button(
-                onClick = {
-                    navController.navigate("EmployeeScreen")
-                },
+                onClick = { navController.navigate("LoginManager") },
                 modifier = Modifier
-                    .width(180.dp)
-                    .height(50.dp),
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+                    .height(130.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = com.example.shedula_next_try.ui.theme.leichtesGrau,
-                    contentColor = unserSchwarz
+                    contentColor = com.example.shedula_next_try.ui.theme.unserSchwarz
                 )
             ) {
                 Text(
-                    text = "Zurück",
-                    fontSize = 16.sp
+                    text = "Login",
+                    fontSize = 40.sp
+                )
+            }
+            Button(
+                onClick = { navController.navigate("ErsteinrichtungScreen") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+                    .height(130.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = com.example.shedula_next_try.ui.theme.leichtesGrau,
+                    contentColor = com.example.shedula_next_try.ui.theme.unserSchwarz
+                )
+            ) {
+                Text(
+                    text = "Ersteinrichtung",
+                    fontSize = 36.sp
                 )
             }
         }
     }
 }
+
+

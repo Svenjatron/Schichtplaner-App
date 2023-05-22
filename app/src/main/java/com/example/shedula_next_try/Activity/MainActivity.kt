@@ -1,4 +1,4 @@
-package com.example.shedula_next_try
+package com.example.shedula_next_try.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,11 +7,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-
-
+import com.example.shedula_next_try.View.NFCKontakt1Screen
+import com.example.shedula_next_try.View.AdminScreen
+import com.example.shedula_next_try.View.EmployeeScreen
+import com.example.shedula_next_try.View.ErsteinrichtungScreen
+import com.example.shedula_next_try.View.KalenderScreen
+import com.example.shedula_next_try.View.LoginManager
+import com.example.shedula_next_try.View.LoginScreen
+import com.example.shedula_next_try.View.TeamManager
+import com.example.shedula_next_try.View.ZeiterfassungsScreen
 
 
 class MainActivity : ComponentActivity() {

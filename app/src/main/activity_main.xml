@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".MainActivity">
+    tools:context=".com.example.shedula_next_try.Model.MainActivity">
 
     <Button
         android:id="@+id/btnPunchIn"

@@ -1,3 +1,5 @@
+package com.example.shedula_next_try.Model
+
 import android.nfc.NdefMessage
 import android.nfc.NdefRecord
 import android.nfc.NfcAdapter

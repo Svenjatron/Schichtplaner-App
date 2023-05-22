@@ -1,4 +1,4 @@
-package com.example.shedula_next_try
+package com.example.shedula_next_try.Model
 
 enum class Role {
     ADMIN,
