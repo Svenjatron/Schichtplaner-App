@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "957929838742",
+    "project_id": "shedula-9264e",
+    "storage_bucket": "shedula-9264e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957929838742:android:1a05b4ad7fc5d6b4298ab7",
+        "android_client_info": {
+          "package_name": "com.example.shedula_next_try"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdKimszV3_VB5xvlvQj6bPvQd1FYIliIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

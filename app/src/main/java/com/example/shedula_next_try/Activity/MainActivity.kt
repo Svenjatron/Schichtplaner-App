@@ -1,3 +1,4 @@
+
 package com.example.shedula_next_try.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,14 +17,23 @@ import com.example.shedula_next_try.View.LoginManager
 import com.example.shedula_next_try.View.LoginScreen
 import com.example.shedula_next_try.View.TeamManager
 import com.example.shedula_next_try.View.ZeiterfassungsScreen
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import androidx.appcompat.app.AppCompatActivity
+import com.example.shedula_next_try.AdminRegister
+import com.google.firebase.FirebaseApp
 
 
 class MainActivity : ComponentActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ShedulaNextTryApp()
         }
+        FirebaseApp.initializeApp(this)
+        val firebase : DatabaseReference = FirebaseDatabase.getInstance().getReference()
     }
 }
 
@@ -59,6 +69,9 @@ fun ShedulaNextTryApp() {
         composable("KalenderScreen") {
             KalenderScreen(navController)
         }
+        composable("AdminRegister") {
+            AdminRegister(navController)
+        }
 
 
 
@@ -70,8 +83,4 @@ fun ShedulaNextTryApp() {
 fun PreviewShedulaNextTryApp() {
     ShedulaNextTryApp()
 }
-
-
-
-
 

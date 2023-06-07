@@ -65,11 +65,11 @@ fun ErsteinrichtungScreen(navController: NavController) {
             )
 
             Button(
-                onClick = { navController.navigate("Teammanager") },
+                onClick = { navController.navigate("AdminRegister") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-                    .height(130.dp),
+                    .height(80.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = leichtesGrau,
                     contentColor = unserSchwarz
@@ -78,6 +78,26 @@ fun ErsteinrichtungScreen(navController: NavController) {
                 Text(
                     text = "Loslegen",
                     fontSize = 45.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = {
+                    navController.navigate("LoginScreen")
+                },
+                modifier = Modifier
+                    .width(180.dp)
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = com.example.shedula_next_try.ui.theme.leichtesGrau,
+                    contentColor = com.example.shedula_next_try.ui.theme.unserSchwarz
+                )
+            ) {
+                Text(
+                    text = "Zurück",
+                    fontSize = 16.sp
                 )
             }
         }

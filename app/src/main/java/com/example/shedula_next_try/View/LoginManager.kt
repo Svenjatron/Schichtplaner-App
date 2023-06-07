@@ -9,38 +9,38 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.*
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.navigation.NavController
 import com.example.shedula_next_try.Model.Authenticator_function
-import com.example.shedula_next_try.Model.Role
-
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 @Composable
 fun LoginManager(navController: NavController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    val usernameState = remember { mutableStateOf("") }
-    val passwordState = remember { mutableStateOf("") }
     val userDoesNotExist = remember { mutableStateOf(false) }
     val offsetY = remember { mutableStateOf(0.dp) }
+
+    var user by remember { mutableStateOf<FirebaseUser?>(null) }
+    val auth = FirebaseAuth.getInstance()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
             .offset(y = offsetY.value)
-
-    )
-    {
+    ) {
         Box(
             modifier = Modifier
                 .height(50.dp)
@@ -71,7 +71,6 @@ fun LoginManager(navController: NavController) {
         )
 
         Column(
-
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -127,15 +126,17 @@ fun LoginManager(navController: NavController) {
             // Login Button mit Admin, Employee Splitter
             Button(
                 onClick = {
-                    val user = Authenticator_function(username, password)
-                    if (user != null) {
-                        when (user.role) {
-                            Role.ADMIN -> navController.navigate("AdminScreen")
-                            Role.EMPLOYEE -> navController.navigate("EmployeeScreen")
-                            else -> userDoesNotExist.value = true
+                    Authenticator_function(username, password) { firebaseUser ->
+                        user = firebaseUser
+                        if (firebaseUser != null) {
+                            when (firebaseUser.email) {
+                                // Dieser Teil ist noch Bullshit
+                                "admin@example.com" -> navController.navigate("AdminScreen")
+                                else -> navController.navigate("EmployeeScreen")
+                            }
+                        } else {
+                            userDoesNotExist.value = true
                         }
-                    } else {
-                        userDoesNotExist.value = true
                     }
                 },
                 modifier = Modifier
@@ -181,7 +182,6 @@ fun LoginManager(navController: NavController) {
                     fontSize = 20.sp,
                     modifier = Modifier
                         .padding(start = 20.dp, top = 8.dp, bottom = 60.dp)
-
                 )
             }
         }
