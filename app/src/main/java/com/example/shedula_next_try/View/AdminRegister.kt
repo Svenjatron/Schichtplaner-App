@@ -24,13 +24,15 @@ import androidx.compose.material3.Switch
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.shedula_next_try.Model.MainViewModel
 import com.example.shedula_next_try.Model.Role
 import com.example.shedula_next_try.Model.User
 import com.example.shedula_next_try.Model.Team
 
 @Composable
-fun AdminRegister(navController: NavController, context: Context, createAdmin: (admin: User, team: Team) -> Unit) {
+fun AdminRegister(navController: NavController, context: Context, viewModel: MainViewModel) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var role by remember { mutableStateOf(Role.ADMIN) }
@@ -185,24 +187,11 @@ fun AdminRegister(navController: NavController, context: Context, createAdmin: (
             )
             Button(
                 onClick = {
-                    val user = User(
-                        username = username,
-                        password = password,
-                        role = role,
-                        workhours = workhours,
-                        workedhours = 0.0,
-                        vacationDays = vacationDays
-                    )
-                    val team = Team(teamname = teamname, teammates = mutableListOf(user))
-
-                    createAdmin(user, team)
-
+                    viewModel.createAdmin(username, password, Role.ADMIN, workhours, 0.0, vacationDays, teamname)
                     Toast.makeText(
-                        context,
-                        "Teammanager und Team erfolgreich erstellt.",
+                        context, "Teammanager und Team erfolgreich erstellt.",
                         Toast.LENGTH_SHORT
                     ).show()
-
                     navController.navigate("LoginScreen")
                 },
                 modifier = Modifier
@@ -218,6 +207,8 @@ fun AdminRegister(navController: NavController, context: Context, createAdmin: (
                     fontSize = 20.sp
                 )
             }
+
+
 
             Button(
                 onClick = {

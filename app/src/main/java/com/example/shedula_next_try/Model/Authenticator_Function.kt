@@ -10,7 +10,7 @@ fun Authenticator_function(username: String, password: String, onComplete: (Fire
     val auth = FirebaseAuth.getInstance()
 
     // Benutzername in Fake-Email umwandeln
-    val email = "$username@meineapp.com"
+    val email = "$username@shedula.com"
 
     auth.signInWithEmailAndPassword(email, password)
         .addOnCompleteListener { task ->

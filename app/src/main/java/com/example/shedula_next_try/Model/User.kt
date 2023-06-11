@@ -10,41 +10,44 @@ enum class Role {
     ADMIN,
     EMPLOYEE
 }
-
 class User(
     val username: String,
-    val password: String,
     val role: Role,
     var workhours: Double,
     var workedhours: Double,
     var vacationDays: Int
 ) {
     // Fake Email Ersteller
-    val email: String = "$username@meineapp.com"
+    val email: String = "$username@shedula.com"
 
     private val db = FirebaseFirestore.getInstance()
 
-    suspend fun saveUser() {
-        db.collection("users")
-            .document(username)
-            .set(this)
-        // Erstelle den Benutzer in Firebase Auth
+    fun saveUser(password: String) {
+        // Benutzer in Firebase Auth
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(this.email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Der Benutzer wurde erfolgreich in Firebase Auth erstellt
+                    // Benutzer in Firestore
+                    val userMap = mapOf(
+                        "username" to username,
+                        "role" to role.toString(),
+                        "workhours" to workhours,
+                        "workedhours" to workedhours,
+                        "vacationDays" to vacationDays
+                    )
+                    db.collection("users")
+                        .document(username)
+                        .set(userMap)
                 } else {
                     // Es gab einen Fehler beim Erstellen des Benutzers in Firebase Auth
                 }
             }
     }
-
     suspend fun updateUser(updatedUser: User) {
         db.collection("users")
             .document(username)
             .update(
                 "username", updatedUser.username,
-                "password", updatedUser.password,
                 "role", updatedUser.role,
                 "workhours", updatedUser.workhours,
                 "workedhours", updatedUser.workedhours,
@@ -52,14 +55,15 @@ class User(
             )
     }
 
-    suspend fun deleteUser() {
-        db.collection("users")
-            .document(username)
-            .delete()
+    fun deleteUser() {
         FirebaseAuth.getInstance().currentUser?.delete()
             ?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Der Benutzer wurde erfolgreich aus Firebase Auth gelöscht
+                    // Jetzt löschen wir den Benutzer aus Firestore
+                    db.collection("users")
+                        .document(username)
+                        .delete()
                 }
             }
     }

@@ -75,14 +75,10 @@ fun ShedulaNextTryApp(viewModel: MainViewModel) {
             }
         }
         composable("AdminRegister") {
-            AdminRegister(navController, context) { admin, team ->
-                viewModel.createAdmin(admin, team)
-            }
+            AdminRegister(navController, context, viewModel)
         }
-
-
-
     }
+
 }
 
 @Preview
