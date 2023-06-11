@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.shedula_next_try.Model.Authenticator_function
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

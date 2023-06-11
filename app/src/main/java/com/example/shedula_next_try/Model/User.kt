@@ -1,4 +1,9 @@
+package com.example.shedula_next_try.Model
+
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import android.content.Context
 
 enum class Role {
@@ -14,21 +19,27 @@ class User(
     var workedhours: Double,
     var vacationDays: Int
 ) {
+    // Fake Email Ersteller
+    val email: String = "$username@meineapp.com"
+
     private val db = FirebaseFirestore.getInstance()
 
-    fun saveUser(context: Context) {
+    suspend fun saveUser() {
         db.collection("users")
             .document(username)
             .set(this)
-            .addOnSuccessListener {
-                // Textbox einfügen / Success
-            }
-            .addOnFailureListener { exception ->
-                // Textbox einfügen / Fehler
+        // Erstelle den Benutzer in Firebase Auth
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(this.email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Der Benutzer wurde erfolgreich in Firebase Auth erstellt
+                } else {
+                    // Es gab einen Fehler beim Erstellen des Benutzers in Firebase Auth
+                }
             }
     }
 
-    fun updateUser(context: Context, updatedUser: User) {
+    suspend fun updateUser(updatedUser: User) {
         db.collection("users")
             .document(username)
             .update(
@@ -39,23 +50,49 @@ class User(
                 "workedhours", updatedUser.workedhours,
                 "vacationDays", updatedUser.vacationDays
             )
-            .addOnSuccessListener {
-                // Textbox einfügen / Success
-            }
-            .addOnFailureListener { exception ->
-                // Textbox einfügen / Fehler
-            }
     }
 
-    fun deleteUser() {
+    suspend fun deleteUser() {
         db.collection("users")
             .document(username)
             .delete()
-            .addOnSuccessListener {
-                // Textbox einfügen / Success
+        FirebaseAuth.getInstance().currentUser?.delete()
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Der Benutzer wurde erfolgreich aus Firebase Auth gelöscht
+                }
             }
-            .addOnFailureListener { exception ->
-                // Textbox einfügen / Fehler
-            }
+    }
+}
+
+class Team(val teamname: String, var teammates: MutableList<User>) {
+    private val db = FirebaseFirestore.getInstance()
+
+    suspend fun saveTeam() {
+        db.collection("teams")
+            .document(teamname)
+            .set(this)
+    }
+
+    suspend fun updateTeam(updatedTeam: Team) {
+        db.collection("teams")
+            .document(teamname)
+            .update(
+                "teammates", updatedTeam.teammates
+            )
+    }
+
+    suspend fun deleteTeam() {
+        db.collection("teams")
+            .document(teamname)
+            .delete()
+    }
+
+    fun addTeammate(teammate: User) {
+        teammates.add(teammate)
+    }
+
+    fun removeTeammate(teammate: User) {
+        teammates.remove(teammate)
     }
 }
