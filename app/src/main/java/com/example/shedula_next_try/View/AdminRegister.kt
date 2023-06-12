@@ -26,13 +26,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.shedula_next_try.Model.LocalNavController
 import com.example.shedula_next_try.Model.MainViewModel
 import com.example.shedula_next_try.Model.Role
 import com.example.shedula_next_try.Model.User
 import com.example.shedula_next_try.Model.Team
 
 @Composable
-fun AdminRegister(navController: NavController, context: Context, viewModel: MainViewModel) {
+fun AdminRegister(context: Context, viewModel: MainViewModel) {
+    val navController = LocalNavController.current
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var role by remember { mutableStateOf(Role.ADMIN) }
@@ -232,7 +234,5 @@ fun AdminRegister(navController: NavController, context: Context, viewModel: Mai
         }
     }
 }
-
-
 
 

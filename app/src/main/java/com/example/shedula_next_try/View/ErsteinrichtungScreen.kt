@@ -15,9 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.shedula_next_try.Model.LocalNavController
 
 @Composable
-fun ErsteinrichtungScreen(navController: NavController) {
+fun ErsteinrichtungScreen() {
+    val navController = LocalNavController.current
     Box(
         modifier = Modifier
             .fillMaxSize()

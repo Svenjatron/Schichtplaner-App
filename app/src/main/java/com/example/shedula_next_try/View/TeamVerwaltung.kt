@@ -25,13 +25,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.navigation.compose.rememberNavController
+import com.example.shedula_next_try.Model.LocalNavController
 import com.example.shedula_next_try.Model.Role
 import com.example.shedula_next_try.Model.User
 import com.example.shedula_next_try.Model.Team
 import com.example.shedula_next_try.Model.MainViewModel
 
 @Composable
-fun TeamVerwaltung(navController: NavController, team: Team, context: Context, viewModel: MainViewModel) {
+fun TeamVerwaltung(team: Team, context: Context, viewModel: MainViewModel) {
+    val navController = LocalNavController.current
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var role by remember { mutableStateOf(Role.EMPLOYEE) }

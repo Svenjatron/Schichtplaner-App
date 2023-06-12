@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.shedula_next_try.Model.LocalNavController
 
 
 val leichtesGrau = Color(0xFFF2F2F2)
@@ -30,7 +31,8 @@ val orange1 = Color(0XFFF24405)
 val orange2 = Color(0XFFF26716)
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen() {
+    val navController = LocalNavController.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -105,5 +107,4 @@ fun LoginScreen(navController: NavController) {
         }
     }
 }
-
 

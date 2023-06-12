@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -15,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.FirebaseApp
 import androidx.lifecycle.ViewModelProvider
 import com.example.shedula_next_try.AdminRegister
+import com.example.shedula_next_try.Model.LocalNavController
 import com.example.shedula_next_try.Model.MainViewModel
 import com.example.shedula_next_try.Model.Role
 import com.example.shedula_next_try.Model.User
@@ -36,49 +38,51 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
 fun ShedulaNextTryApp(viewModel: MainViewModel) {
     val navController = rememberNavController()
     val context = LocalContext.current
 
-    NavHost(navController = navController, startDestination = "LoginScreen") {
-        composable("LoginScreen") {
-            LoginScreen(navController)
-        }
-        composable("LoginManager") {
-            LoginManager(navController)
-        }
-        composable("ErsteinrichtungScreen") {
-            ErsteinrichtungScreen(navController)
-        }
-        composable("TeamManager") {
-            TeamManager(navController)
-        }
-        composable("EmployeeScreen") {
-            EmployeeScreen(navController)
-        }
-        composable("AdminScreen") {
-            AdminScreen(navController)
-        }
-        composable("ZeiterfassungsScreen") {
-            ZeiterfassungsScreen(navController)
-        }
-        composable("NFCKontakt1Screen") {
-            NFCKontakt1Screen(navController)
-        }
-        composable("KalenderScreen") {
-            KalenderScreen(navController)
-        }
-        composable("TeamVerwaltung") {
-            viewModel.team?.let { team ->
-                TeamVerwaltung(navController, team, context, viewModel)
+    CompositionLocalProvider(LocalNavController provides navController) {
+        NavHost(navController = navController, startDestination = "LoginScreen") {
+            composable("LoginScreen") {
+                LoginScreen()
+            }
+            composable("LoginManager") {
+                LoginManager()
+            }
+            composable("ErsteinrichtungScreen") {
+                ErsteinrichtungScreen()
+            }
+            composable("TeamManager") {
+                TeamManager()
+            }
+            composable("EmployeeScreen") {
+                EmployeeScreen()
+            }
+            composable("AdminScreen") {
+                AdminScreen()
+            }
+            composable("ZeiterfassungsScreen") {
+                ZeiterfassungsScreen()
+            }
+            composable("NFCKontakt1Screen") {
+                NFCKontakt1Screen()
+            }
+            composable("KalenderScreen") {
+                KalenderScreen()
+            }
+            composable("TeamVerwaltung") {
+                viewModel.team?.let { team ->
+                    TeamVerwaltung(team, context, viewModel)
+                }
+            }
+            composable("AdminRegister") {
+                AdminRegister(context, viewModel)
             }
         }
-        composable("AdminRegister") {
-            AdminRegister(navController, context, viewModel)
-        }
     }
-
 }
 
 @Preview

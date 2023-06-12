@@ -15,10 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.shedula_next_try.Model.LocalNavController
 import com.example.shedula_next_try.View.unserSchwarz
 
 @Composable
-fun NFCKontakt1Screen(navController: NavController) {
+fun NFCKontakt1Screen() {
+    val navController = LocalNavController.current
     Box(
         modifier = Modifier
             .fillMaxSize()

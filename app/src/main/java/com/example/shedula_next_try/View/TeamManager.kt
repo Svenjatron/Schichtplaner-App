@@ -21,10 +21,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.*
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.shedula_next_try.Model.LocalNavController
 
 
 @Composable
-fun TeamManager(navController: NavController) {
+fun TeamManager() {
+    val navController = LocalNavController.current
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val usernameState = remember { mutableStateOf("") }

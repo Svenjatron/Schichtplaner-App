@@ -24,12 +24,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.shedula_next_try.Model.LocalNavController
 import com.example.shedula_next_try.ui.theme.unserSchwarz
 import java.lang.reflect.Field
 
 
 @Composable
-fun KalenderScreen(navController: NavController) {
+fun KalenderScreen() {
+    val navController = LocalNavController.current
     val context = LocalContext.current
 
     Box(

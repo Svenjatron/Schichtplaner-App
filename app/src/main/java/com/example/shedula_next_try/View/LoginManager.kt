@@ -23,11 +23,13 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.shedula_next_try.Model.Authenticator_function
+import com.example.shedula_next_try.Model.LocalNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
 @Composable
-fun LoginManager(navController: NavController) {
+fun LoginManager() {
+    val navController = LocalNavController.current
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val userDoesNotExist = remember { mutableStateOf(false) }
