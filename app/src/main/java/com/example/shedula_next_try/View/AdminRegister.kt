@@ -190,10 +190,7 @@ fun AdminRegister(context: Context, viewModel: MainViewModel) {
             Button(
                 onClick = {
                     viewModel.createAdmin(username, password, Role.ADMIN, workhours, 0.0, vacationDays, teamname)
-                    Toast.makeText(
-                        context, "Teammanager und Team erfolgreich erstellt.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+
                     navController.navigate("LoginScreen")
                 },
                 modifier = Modifier

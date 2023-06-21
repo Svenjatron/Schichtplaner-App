@@ -3,7 +3,6 @@ package com.example.shedula_next_try.View
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -14,20 +13,14 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.*
-import androidx.navigation.NavController
-import androidx.compose.material3.Switch
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.navigation.compose.rememberNavController
 import com.example.shedula_next_try.Model.LocalNavController
 import com.example.shedula_next_try.Model.Role
-import com.example.shedula_next_try.Model.User
 import com.example.shedula_next_try.Model.Team
 import com.example.shedula_next_try.Model.MainViewModel
 

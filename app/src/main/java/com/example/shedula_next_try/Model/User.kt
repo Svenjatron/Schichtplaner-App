@@ -40,7 +40,7 @@ class User(
                         .set(userMap)
                 } else {
                     // Es gab einen Fehler beim Erstellen des Benutzers in Firebase Auth
-                    throw Exception ("Beim Erstellen des:der Benutzer:in ist ein Fehler aufgetreten.")
+                    
                 }
             }
     }
