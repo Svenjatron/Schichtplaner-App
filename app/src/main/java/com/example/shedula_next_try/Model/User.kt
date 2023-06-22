@@ -2,20 +2,33 @@ package com.example.shedula_next_try.Model
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import android.content.Context
+import kotlinx.coroutines.tasks.await
 
 enum class Role {
     ADMIN,
     EMPLOYEE
 }
+data class CalendarEntry(
+    val date: String,
+    val workingHours: Double,
+    val vacationDays: Int
+) {
+    fun toMap(): Map<String, Any> {
+        return mapOf(
+            "date" to date,
+            "workingHours" to workingHours,
+            "vacationDays" to vacationDays
+        )
+    }
+}
+
 class User(
     val username: String,
     val role: Role,
     var workhours: Double,
     var workedhours: Double,
-    var vacationDays: Int
+    var vacationDays: Int,
+    var calendarEntries: MutableList<CalendarEntry> = mutableListOf()
 ) {
     // Fake Email Ersteller
     val email: String = "$username@shedula.com"
@@ -33,14 +46,16 @@ class User(
                         "role" to role.toString(),
                         "workhours" to workhours,
                         "workedhours" to workedhours,
-                        "vacationDays" to vacationDays
+                        "vacationDays" to vacationDays,
+                        "calendarEntries" to calendarEntries.map { it.toMap() }
+
                     )
                     db.collection("users")
                         .document(username)
                         .set(userMap)
                 } else {
                     // Es gab einen Fehler beim Erstellen des Benutzers in Firebase Auth
-                    
+
                 }
             }
     }
@@ -52,7 +67,8 @@ class User(
                 "role", updatedUser.role,
                 "workhours", updatedUser.workhours,
                 "workedhours", updatedUser.workedhours,
-                "vacationDays", updatedUser.vacationDays
+                "vacationDays", updatedUser.vacationDays,
+                "calendarEntries" to updatedUser.calendarEntries.map { it.toMap() }
             )
     }
 
@@ -100,4 +116,32 @@ class Team(val teamname: String, var teammates: MutableList<User>) {
     fun removeTeammate(teammate: User) {
         teammates.remove(teammate)
     }
+
+}
+suspend fun getCurrentUser(username: String): User? {
+    return FirebaseAuth.getInstance().currentUser?.let { currentUser ->
+        val snapshot = FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(currentUser.uid)
+            .get()
+            .await()
+        snapshot.toObject(User::class.java)
+    }
+}
+
+suspend fun getUserFromDatabase(username: String): User? {
+    val snapshot = FirebaseFirestore.getInstance()
+        .collection("users")
+        .document(username)
+        .get()
+        .await()
+    return snapshot.toObject(User::class.java)
+}
+
+suspend fun updateUserInDatabase(user: User) {
+    FirebaseFirestore.getInstance()
+        .collection("users")
+        .document(user.username)
+        .set(user)
+        .await()
 }

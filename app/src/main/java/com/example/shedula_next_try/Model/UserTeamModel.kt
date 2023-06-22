@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 class MainViewModel : ViewModel() {
     var user: User? = null
     var team: Team? = null
+    private val calendarUtils = CalendarUtils()
 
     fun createUser(
         username: String,
@@ -84,4 +85,28 @@ class MainViewModel : ViewModel() {
             team.saveTeam()
         }
     }
+    suspend fun addEntry(username: String, date: String, workingHours: Double, vacationDays: Int) {
+        val currentUser = getCurrentUser(username)
+        if (currentUser != null) {
+            calendarUtils.addEntry(date, workingHours, vacationDays)
+            updateUserInDatabase(currentUser)
+        }
+    }
+
+    fun deleteEntry(date: String, entry: CalendarEntry) {
+        calendarUtils.deleteEntry(date, entry)
+    }
+
+    fun getEntries(date: String): List<CalendarEntry> {
+        return calendarUtils.getEntries(date)
+    }
+
+    fun getAllEntries(): List<CalendarEntry> {
+        return calendarUtils.getAllEntries()
+    }
+
+    fun clearEntries() {
+        calendarUtils.clearEntries()
+    }
+
 }

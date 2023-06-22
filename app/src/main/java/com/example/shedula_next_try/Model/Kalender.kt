@@ -1,11 +1,5 @@
 package com.example.shedula_next_try.Model
 
-data class CalendarEntry(
-    val date: String,
-    val workingHours: Double,
-    val vacationDays: Int
-)
-
 class CalendarUtils {
     private val entries: MutableMap<String, MutableList<CalendarEntry>> = mutableMapOf()
 
@@ -15,6 +9,12 @@ class CalendarUtils {
             entries[date]?.add(entry)
         } else {
             entries[date] = mutableListOf(entry)
+        }
+    }
+
+    fun deleteEntry(date: String, entry: CalendarEntry) {
+        if (entries.containsKey(date)) {
+            entries[date]?.remove(entry)
         }
     }
 

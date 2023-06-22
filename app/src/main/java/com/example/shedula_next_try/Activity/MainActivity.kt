@@ -71,7 +71,7 @@ fun ShedulaNextTryApp(viewModel: MainViewModel) {
                 NFCKontakt1Screen()
             }
             composable("KalenderScreen") {
-                KalenderScreen()
+                KalenderScreen(viewModel)
             }
             composable("TeamVerwaltung") {
                 viewModel.team?.let { team ->
