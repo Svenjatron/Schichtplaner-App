@@ -82,7 +82,7 @@ fun ZeiterfassungsScreen() {
                 // )
             }
             Button(
-                onClick = { navController.navigate("NFCKontakt1Screen") },
+                onClick = { navController.navigate("NfcTimePunchScreen") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp)

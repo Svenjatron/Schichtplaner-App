@@ -81,6 +81,9 @@ fun ShedulaNextTryApp(viewModel: MainViewModel) {
             composable("AdminRegister") {
                 AdminRegister(context, viewModel)
             }
+            composable("NfcTimePunchScreen") {
+                NfcTimePunchScreen(viewModel)
+            }
         }
     }
 }
