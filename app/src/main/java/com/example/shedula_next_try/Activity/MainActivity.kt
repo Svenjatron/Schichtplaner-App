@@ -126,7 +126,7 @@ fun ShedulaNextTryApp(viewModel: MainViewModel) {
             composable("ZeiterfassungsScreen") {
                 ZeiterfassungsScreen()
             }
-            composable("NFCKontakt1Screen") {
+            composable("NFC_neu1") {
                 NFCKontakt1Screen()
             }
             composable("KalenderScreen") {
