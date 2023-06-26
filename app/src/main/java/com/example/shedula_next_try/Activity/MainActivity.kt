@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.nfc.NfcAdapter
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
@@ -64,23 +65,27 @@ class MainActivity : ComponentActivity() {
         handleNfcIntent(intent)
     }
     private fun handleNfcIntent(intent: Intent?) {
+        Log.d("NFC", "handleNfcIntent called with action: ${intent?.action}") // add this line
+
         if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent?.action || NfcAdapter.ACTION_TAG_DISCOVERED == intent?.action) {
+            Log.d("NFC", "NFC intent detected") // add this line
+
             if (punchInTime.value == 0L) {
                 punchInTime.value = System.currentTimeMillis()
-                // ... Communicate punch in
+                Log.d("NFC", "Punch in time recorded: ${punchInTime.value}") // add this line
             } else if (punchOutTime.value == 0L) {
                 punchOutTime.value = System.currentTimeMillis()
-                // ... Communicate punch out
+                Log.d("NFC", "Punch out time recorded: ${punchOutTime.value}") // add this line
                 calculateTimeDifference()
             } else {
-                // Reset if both times are already recorded
                 punchInTime.value = 0
                 punchOutTime.value = 0
                 hoursWorked.value = ""
-                // ... Communicate reset
+                Log.d("NFC", "Times reset") // add this line
             }
         }
     }
+
 
     private fun calculateTimeDifference() {
         val diff = punchOutTime.value!! - punchInTime.value!!
