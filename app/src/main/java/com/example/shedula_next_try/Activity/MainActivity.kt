@@ -4,7 +4,9 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
 import android.nfc.NfcAdapter
+import android.nfc.tech.NfcA
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
@@ -17,73 +19,83 @@ import com.example.shedula_next_try.View.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseApp
 import androidx.lifecycle.ViewModelProvider
 import com.example.shedula_next_try.AdminRegister
 import com.example.shedula_next_try.Model.LocalNavController
 import com.example.shedula_next_try.Model.MainViewModel
-import com.example.shedula_next_try.Model.Role
-import com.example.shedula_next_try.Model.User
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var viewModel: MainViewModel
-    private var admin: User? = null
     private var nfcAdapter: NfcAdapter? = null
-    private var punchInTime = MutableLiveData<Long>(0)
-    private var punchOutTime = MutableLiveData<Long>(0)
-    private var hoursWorked = MutableLiveData<String>("")
+    private var punchedIn = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
-        val firebase : DatabaseReference = FirebaseDatabase.getInstance().getReference()
+        val firebase: DatabaseReference = FirebaseDatabase.getInstance().getReference()
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-
-        setContent {
-            ShedulaNextTryApp(viewModel)
+        if (NfcAdapter.ACTION_TECH_DISCOVERED == intent.action) {
+            handleNfcIntent(intent)
         }
+
+        setContent { ShedulaNextTryApp(viewModel) }
     }
+
+
     override fun onResume() {
         super.onResume()
         val intent = Intent(this, javaClass).apply {
             addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING)
         }
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-        val intentFilter = IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val intentFilters = arrayOf(IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED))
+        val techLists = arrayOf<Array<String>?>(arrayOf(NfcA::class.java.name))
 
-        nfcAdapter?.enableForegroundDispatch(this, pendingIntent, arrayOf(intentFilter), null)
+        nfcAdapter?.enableForegroundDispatch(this, pendingIntent, intentFilters, techLists)
     }
+
     override fun onPause() {
         super.onPause()
         nfcAdapter?.disableForegroundDispatch(this)
     }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         handleNfcIntent(intent)
     }
+
     private fun handleNfcIntent(intent: Intent?) {
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent?.action || NfcAdapter.ACTION_TAG_DISCOVERED == intent?.action) {
-            if (punchInTime.value == 0L) {
-                punchInTime.value = System.currentTimeMillis()
-                // ... Communicate punch in
-            } else if (punchOutTime.value == 0L) {
-                punchOutTime.value = System.currentTimeMillis()
-                // ... Communicate punch out
+        Log.d("NFC", "handleNfcIntent called with action: ${intent?.action}")
+
+        if (NfcAdapter.ACTION_TAG_DISCOVERED == intent?.action) {
+            Log.d("NFC", "NFC intent detected")
+
+            if (viewModel.punchInTime.value == 0L) {
+                viewModel.punchInTime.value = System.currentTimeMillis()
+                Log.d("NFC", "Punch in time recorded: ${viewModel.punchInTime.value}")
+            } else if (viewModel.punchOutTime.value == 0L) {
+                viewModel.punchOutTime.value = System.currentTimeMillis()
+                Log.d("NFC", "Punch out time recorded: ${viewModel.punchOutTime.value}")
                 calculateTimeDifference()
             } else {
-                // Reset if both times are already recorded
-                punchInTime.value = 0
-                punchOutTime.value = 0
-                hoursWorked.value = ""
-                // ... Communicate reset
+                viewModel.punchInTime.value = 0
+                viewModel.punchOutTime.value = 0
+                viewModel.hoursWorked.value = ""
+                Log.d("NFC", "Times reset")
             }
         }
     }
 
     private fun calculateTimeDifference() {
-        val diff = punchOutTime.value!! - punchInTime.value!!
+        val diff = viewModel.punchOutTime.value!! - viewModel.punchInTime.value!!
 
         var seconds = diff / 1000
         var minutes = seconds / 60
@@ -92,65 +104,62 @@ class MainActivity : ComponentActivity() {
         minutes %= 60
         seconds %= 60
 
-        hoursWorked.value = "$hours:$minutes"
+        viewModel.hoursWorked.value = "$hours:$minutes"
     }
 
-}
+    @Composable
+    fun ShedulaNextTryApp(viewModel: MainViewModel) {
+        val navController = rememberNavController()
+        val context = LocalContext.current
 
-
-@Composable
-fun ShedulaNextTryApp(viewModel: MainViewModel) {
-    val navController = rememberNavController()
-    val context = LocalContext.current
-
-    CompositionLocalProvider(LocalNavController provides navController) {
-        NavHost(navController = navController, startDestination = "LoginScreen") {
-            composable("LoginScreen") {
-                LoginScreen()
-            }
-            composable("LoginManager") {
-                LoginManager()
-            }
-            composable("ErsteinrichtungScreen") {
-                ErsteinrichtungScreen()
-            }
-            composable("TeamManager") {
-                TeamManager()
-            }
-            composable("EmployeeScreen") {
-                EmployeeScreen()
-            }
-            composable("AdminScreen") {
-                AdminScreen()
-            }
-            composable("ZeiterfassungsScreen") {
-                ZeiterfassungsScreen()
-            }
-            composable("NFCKontakt1Screen") {
-                NFCKontakt1Screen()
-            }
-            composable("KalenderScreen") {
-                KalenderScreen(viewModel)
-            }
-            composable("TeamVerwaltung") {
-                viewModel.team?.let { team ->
-                    TeamVerwaltung(team, context, viewModel)
+        CompositionLocalProvider(LocalNavController provides navController) {
+            NavHost(navController = navController, startDestination = "LoginScreen") {
+                composable("LoginScreen") {
+                    LoginScreen(viewModel) // Passing the ViewModel to LoginScreen
+                }
+                composable("LoginManager") {
+                    LoginManager(viewModel) // Passing the ViewModel to LoginManager
+                }
+                composable("ErsteinrichtungScreen") {
+                    ErsteinrichtungScreen(viewModel) // Passing the ViewModel to ErsteinrichtungScreen
+                }
+                composable("TeamManager") {
+                    TeamManager(viewModel) // Passing the ViewModel to TeamManager
+                }
+                composable("EmployeeScreen") {
+                    EmployeeScreen(viewModel) // Passing the ViewModel to EmployeeScreen
+                }
+                composable("AdminScreen") {
+                    AdminScreen(viewModel) // Passing the ViewModel to AdminScreen
+                }
+                composable("ZeiterfassungsScreen") {
+                    ZeiterfassungsScreen(viewModel) // Passing the ViewModel to ZeiterfassungsScreen
+                }
+                composable("NFCKontakt1Screen") {
+                    NFCKontakt1Screen(viewModel) // Passing the ViewModel to NFCKontakt1Screen
+                }
+                composable("KalenderScreen") {
+                    KalenderScreen(viewModel) // Passing the ViewModel to KalenderScreen
+                }
+                composable("TeamVerwaltung") {
+                    viewModel.team?.let { team ->
+                        TeamVerwaltung(team, context, viewModel) // Passing the ViewModel to TeamVerwaltung
+                    }
+                }
+                composable("AdminRegister") {
+                    AdminRegister(context, viewModel) // Passing the ViewModel to AdminRegister
+                }
+                composable("NfcTimePunchScreen") {
+                    NfcTimePunchScreen(viewModel) // Passing the ViewModel to NfcTimePunchScreen
                 }
             }
-            composable("AdminRegister") {
-                AdminRegister(context, viewModel)
-            }
-            composable("NfcTimePunchScreen") {
-                NfcTimePunchScreen(viewModel)
-            }
         }
+
+    }
+
+    @Preview
+    @Composable
+    fun PreviewShedulaNextTryApp() {
+        ShedulaNextTryApp(MainViewModel())
     }
 }
-
-@Preview
-@Composable
-fun PreviewShedulaNextTryApp() {
-    ShedulaNextTryApp(MainViewModel())
-}
-
-

@@ -1,25 +1,20 @@
 package com.example.shedula_next_try.Model
 
-import android.content.Intent
-import android.nfc.NfcAdapter
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
+    private val TAG = "MainViewModel"
     var user: User? = null
     var team: Team? = null
-    var punchInTime = MutableLiveData<Long>()
-    var punchOutTime = MutableLiveData<Long>()
-    var hoursWorked = MutableLiveData<String>()
     private val calendarUtils = CalendarUtils()
 
-    init {
-        punchInTime.value = 0L
-        punchOutTime.value = 0L
-        hoursWorked.value = ""
-    }
+    var punchInTime = MutableLiveData<Long>(0)
+    var punchOutTime = MutableLiveData<Long>(0)
+    var hoursWorked = MutableLiveData<String>("")
 
     fun createUser(
         username: String,
@@ -29,13 +24,19 @@ class MainViewModel : ViewModel() {
         workedhours: Double,
         vacationDays: Int
     ) {
-        val newUser = User(username, role, workhours, workedhours, vacationDays)
+        val newUser = User(
+            username = username,
+            role = role,
+            workhours = workhours,
+            workedhours = workedhours,
+            vacationDays = vacationDays,
+            calendarEntries = emptyList()
+        )
         user = newUser
         viewModelScope.launch {
-            newUser.saveUser(password)
+            newUser.saveUser(password, emptyList())
         }
     }
-
 
     fun updateUser(updatedUser: User) {
         viewModelScope.launch {
@@ -71,7 +72,7 @@ class MainViewModel : ViewModel() {
 
     fun addTeammate(username: String) {
         team?.let {
-            val teammate = User(username, Role.EMPLOYEE, 0.0, 0.0, 0)
+            val teammate = User(username, Role.EMPLOYEE, 0.0, 0.0, 0, emptyList())
             it.addTeammate(teammate)
             viewModelScope.launch {
                 it.updateTeam(it)
@@ -81,7 +82,7 @@ class MainViewModel : ViewModel() {
 
     fun removeTeammate(username: String) {
         team?.let {
-            val teammate = User(username, Role.EMPLOYEE, 0.0, 0.0, 0)
+            val teammate = User(username, Role.EMPLOYEE, 0.0, 0.0, 0, emptyList())
             it.removeTeammate(teammate)
             viewModelScope.launch {
                 it.updateTeam(it)
@@ -89,19 +90,47 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun createAdmin(username: String, password: String, role: Role, workhours: Double, workedhours: Double, vacationDays: Int, teamname: String) {
-        val admin = User(username = username, role = role, workhours = workhours, workedhours = workedhours, vacationDays = vacationDays)
+    fun createAdmin(
+        username: String,
+        password: String,
+        role: Role,
+        workhours: Double,
+        workedhours: Double,
+        vacationDays: Int,
+        teamname: String
+    ) {
+        val admin = User(
+            username = username,
+            role = role,
+            workhours = workhours,
+            workedhours = workedhours,
+            vacationDays = vacationDays,
+            calendarEntries = emptyList()
+        )
         val team = Team(teamname = teamname, teammates = mutableListOf(admin))
         viewModelScope.launch {
-            admin.saveUser(password)
+            admin.saveUser(password, emptyList())
             team.saveTeam()
         }
     }
+
     suspend fun addEntry(username: String, date: String, workingHours: Double, vacationDays: Int) {
-        val currentUser = getCurrentUser(username)
+        Log.d(TAG, "addEntry: Start adding entry for username: $username, date: $date")
+
+        val currentUser = User.getCurrentUser(username)
         if (currentUser != null) {
+            val updatedCalendarEntries = currentUser.calendarEntries.toMutableList()
+            updatedCalendarEntries.add(CalendarEntry(date, workingHours, vacationDays))
+            val updatedUser = currentUser.copy(calendarEntries = updatedCalendarEntries)
+
+            Log.d(TAG, "addEntry: Updated user object: $updatedUser")
+
+            User.updateUserInDatabase(updatedUser)
+
+            // Update entry in calendarUtils
             calendarUtils.addEntry(date, workingHours, vacationDays)
-            updateUserInDatabase(currentUser)
+
+            Log.d(TAG, "addEntry: Entry added successfully")
         }
     }
 
@@ -120,36 +149,21 @@ class MainViewModel : ViewModel() {
     fun clearEntries() {
         calendarUtils.clearEntries()
     }
-    fun handleNfcIntent(intent: Intent?) {
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent?.action || NfcAdapter.ACTION_TAG_DISCOVERED == intent?.action) {
-            if (punchInTime.value == 0L) {
-                punchInTime.value = System.currentTimeMillis()
-                // ... Communicate punch in
-            } else if (punchOutTime.value == 0L) {
-                punchOutTime.value = System.currentTimeMillis()
-                // ... Communicate punch out
-                calculateTimeDifference()
-            } else {
-                // Reset if both times are already recorded
-                punchInTime.value = 0
-                punchOutTime.value = 0
-                hoursWorked.value = ""
-                // ... Communicate reset
-            }
-        }
+
+    fun updatePunchInAndOutTimes(punchIn: Long, punchOut: Long) {
+        punchInTime.postValue(punchIn)
+        punchOutTime.postValue(punchOut)
+
+        val hoursWorked = (punchOut - punchIn) / (1000 * 60 * 60)
+        this.hoursWorked.postValue(hoursWorked.toString())
     }
+    suspend fun addEntryToFirestore(username: String, date: String, workingHours: Double, vacationDays: Int) {
+        Log.d(TAG, "addEntryToFirestore: Passed username: $username")
 
-    private fun calculateTimeDifference() {
-        val diff = punchOutTime.value!! - punchInTime.value!!
+        val currentUser = User.getCurrentUser(username)
+        Log.d(TAG, "addEntryToFirestore: currentUser: $currentUser")
 
-        var seconds = diff / 1000
-        var minutes = seconds / 60
-        val hours = minutes / 60
-
-        minutes %= 60
-        seconds %= 60
-
-        hoursWorked.value = "$hours:$minutes"
+        currentUser?.addEntryToFirestore(date, workingHours, vacationDays)
     }
 
 }

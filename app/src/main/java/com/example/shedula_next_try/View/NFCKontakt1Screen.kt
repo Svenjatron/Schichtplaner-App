@@ -13,13 +13,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.shedula_next_try.Model.LocalNavController
-import com.example.shedula_next_try.View.unserSchwarz
+import com.example.shedula_next_try.Model.MainViewModel
 
 @Composable
-fun NFCKontakt1Screen() {
+fun NFCKontakt1Screen(viewModel: MainViewModel) {
     val navController = LocalNavController.current
     Box(
         modifier = Modifier

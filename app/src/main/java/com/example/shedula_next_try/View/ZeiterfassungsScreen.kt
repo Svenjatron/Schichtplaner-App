@@ -14,9 +14,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.shedula_next_try.Model.LocalNavController
+import com.example.shedula_next_try.Model.MainViewModel
 
 @Composable
-fun ZeiterfassungsScreen() {
+fun ZeiterfassungsScreen(viewModel: MainViewModel) {
     val navController = LocalNavController.current
     Box(
         modifier = Modifier

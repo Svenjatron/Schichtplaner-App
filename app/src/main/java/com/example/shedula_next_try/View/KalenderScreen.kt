@@ -26,7 +26,6 @@ import kotlinx.coroutines.withContext
 
 
 
-
 @Composable
 fun KalenderScreen(viewModel: MainViewModel) {
     val navController = LocalNavController.current
@@ -41,7 +40,7 @@ fun KalenderScreen(viewModel: MainViewModel) {
     val enteredWorkingHours = remember { mutableStateOf("") }
     val enteredVacationDays = remember { mutableStateOf("") }
 
-    // Zeig PopUp
+    // Show PopUp
     fun showPopupDialog() {
         showDialog.value = true
     }
@@ -53,7 +52,7 @@ fun KalenderScreen(viewModel: MainViewModel) {
         val hours = enteredWorkingHours.value.toDoubleOrNull() ?: 0.0
         val days = enteredVacationDays.value.toIntOrNull() ?: 0
 
-        runBlocking {
+        viewModelScope.launch {
             val currentUser = FirebaseAuth.getInstance().currentUser
             val username = currentUser?.email?.substringBefore('@') ?: ""
             viewModel.addEntry(username, date, hours, days)
@@ -62,8 +61,6 @@ fun KalenderScreen(viewModel: MainViewModel) {
         enteredWorkingHours.value = ""
         enteredVacationDays.value = ""
     }
-
-
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -117,10 +114,9 @@ fun KalenderScreen(viewModel: MainViewModel) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Theoretisch sollten hier Entries angezeigt werden :(
             Column {
                 Text(
-                    text = "Einträge:",
+                    text = "Zurück:",
                     modifier = Modifier.padding(top = 20.dp),
                     fontSize = 18.sp,
                     color = com.example.shedula_next_try.ui.theme.unserSchwarz,
@@ -194,27 +190,23 @@ fun KalenderScreen(viewModel: MainViewModel) {
                             val hours = enteredWorkingHours.value.toDoubleOrNull() ?: 0.0
                             val days = enteredVacationDays.value.toIntOrNull() ?: 0
 
-                            viewModelScope.launch {
-                                withContext(Dispatchers.IO) {
-                                    val currentUser = FirebaseAuth.getInstance().currentUser
-                                    val username = currentUser?.email?.substringBefore('@') ?: ""
-                                    val date = selectedDate.value
+                            val currentUser = FirebaseAuth.getInstance().currentUser
+                            val username = currentUser?.email?.substringBefore('@') ?: ""
+                            val date = selectedDate.value
 
-                                    viewModel.addEntry(username, date, hours, days)
-                                }
+                            viewModelScope.launch {
+                                viewModel.addEntryToFirestore(username, date, hours, days) // Use addEntryToFirestore
                             }
                             hidePopupDialog()
                         },
-                        colors = ButtonDefaults.textButtonColors(contentColor = com.example.shedula_next_try.ui.theme.leichtesGrau),
+                        colors = ButtonDefaults.textButtonColors(contentColor = com.example.shedula_next_try.ui.theme.unserSchwarz),
                         content = { Text("Eintragen", fontSize = 16.sp) }
                     )
-                }
-
-                ,
+                },
                 dismissButton = {
                     TextButton(
                         onClick = { showDialog.value = false },
-                        colors = ButtonDefaults.textButtonColors(contentColor = com.example.shedula_next_try.ui.theme.leichtesGrau),
+                        colors = ButtonDefaults.textButtonColors(contentColor = com.example.shedula_next_try.ui.theme.unserSchwarz),
                         content = { Text("Abbrechen", fontSize = 16.sp) }
                     )
                 },
@@ -223,3 +215,4 @@ fun KalenderScreen(viewModel: MainViewModel) {
         }
     }
 }
+

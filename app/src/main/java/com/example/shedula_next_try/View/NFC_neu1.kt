@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -18,9 +18,10 @@ import java.util.Date
 
 @Composable
 fun NfcTimePunchScreen(viewModel: MainViewModel) {
-    val punchInTime = remember { mutableStateOf(0L) }
-    val punchOutTime = remember { mutableStateOf(0L) }
-    val hoursWorked = remember { mutableStateOf("") }
+    // Assuming punchInTime, punchOutTime, and hoursWorked are LiveData types
+    val punchInTime = viewModel.punchInTime.observeAsState(initial = null)
+    val punchOutTime = viewModel.punchOutTime.observeAsState(initial = null)
+    val hoursWorked = viewModel.hoursWorked.observeAsState(initial = "")
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -35,24 +36,19 @@ fun NfcTimePunchScreen(viewModel: MainViewModel) {
         )
 
         Text(
-            text = if (punchInTime.value != 0L) "Punch In Time: ${Date(punchInTime.value)}" else "Punch In Time: --:--:--",
+            text = punchInTime.value?.let { "Punch In Time: ${Date(it)}" } ?: "Punch In Time: --:--:--",
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
 
         Text(
-            text = if (punchOutTime.value != 0L) "Punch Out Time: ${Date(punchOutTime.value)}" else "Punch Out Time: --:--:--",
+            text = punchOutTime.value?.let { "Punch Out Time: ${Date(it)}" } ?: "Punch Out Time: --:--:--",
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
 
-        Text(
-            text = "Hours worked: ${hoursWorked.value}",
-            fontSize = 20.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
+
     }
 }
