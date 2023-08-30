@@ -1,7 +1,6 @@
 package com.example.shedula_next_try.Model
 
 import android.util.Log
-import com.example.shedula_next_try.Model.User.Companion.updateUserInDatabase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -164,7 +163,14 @@ data class User(
         val updatedUser = this.copy(calendarEntries = updatedCalendarEntries)
         Log.d(TAG, "addEntryToFirestore: Updated User: $updatedUser")
 
-        updateUserInDatabase(updatedUser)
+        try {
+            Log.d(TAG, "addEntryToFirestore: Calling updateUserInDatabase")
+            updateUserInDatabase(updatedUser)
+            Log.d(TAG, "addEntryToFirestore: updateUserInDatabase called successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "addEntryToFirestore: Error updating user in database", e)
+        }
+
         Log.d(TAG, "addEntryToFirestore: Updated user sent to database")
     }
 

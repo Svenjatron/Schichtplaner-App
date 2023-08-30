@@ -3,4 +3,7 @@
 
 
     <style name="Theme.Shedula_next_try" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="CustomDatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/ocker_1</item>
+    </style>
 </resources>
