@@ -161,6 +161,36 @@ class MainViewModel : ViewModel() {
         currentUser?.addEntryToFirestore(date, workingHours, vacationDays)
     }
 
+    fun handleNfcTagScanned() {
+        Log.d("NFC", "Handling NFC tag in ViewModel")
+
+        if (punchInTime.value == 0L) {
+            punchInTime.value = System.currentTimeMillis()
+            Log.d("NFC", "Punch in time recorded: ${punchInTime.value}")
+        } else if (punchOutTime.value == 0L) {
+            punchOutTime.value = System.currentTimeMillis()
+            Log.d("NFC", "Punch out time recorded: ${punchOutTime.value}")
+            calculateTimeDifference()
+        } else {
+            punchInTime.value = 0
+            punchOutTime.value = 0
+            hoursWorked.value = ""
+            Log.d("NFC", "Times reset")
+        }
+    }
+
+    private fun calculateTimeDifference() {
+        val diff = punchOutTime.value!! - punchInTime.value!!
+
+        var seconds = diff / 1000
+        var minutes = seconds / 60
+        val hours = minutes / 60
+
+        minutes %= 60
+        seconds %= 60
+
+        hoursWorked.value = "$hours:$minutes"
+    }
 }
 
 
