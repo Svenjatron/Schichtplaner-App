@@ -56,11 +56,11 @@ fun KalenderScreen(viewModel: MainViewModel) {
                     val hours = enteredWorkingHours.value.text.toDoubleOrNull() ?: 0.0
                     val days = enteredVacationDays.value.text.toIntOrNull() ?: 0
                     val currentUser = FirebaseAuth.getInstance().currentUser
-                    val username = currentUser?.email?.substringBefore('@') ?: ""
+                    val uid = currentUser?.uid ?: ""
                     val date = selectedDate.value?.toString() ?: ""
 
                     viewModelScope.launch {
-                        viewModel.addEntryToFirestore(username, date, hours, days)
+                        viewModel.addEntryToFirestore(date, hours, days)
                     }
 
                     enteredWorkingHours.value = TextFieldValue("")

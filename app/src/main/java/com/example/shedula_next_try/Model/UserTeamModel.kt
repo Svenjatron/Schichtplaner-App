@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
@@ -40,7 +41,7 @@ class MainViewModel : ViewModel() {
 
     fun updateUser(updatedUser: User) {
         viewModelScope.launch {
-            user?.updateUser(updatedUser)
+            updatedUser.updateUser(updatedUser) // Aufruf über die Instanzmethode
         }
     }
 
@@ -117,7 +118,7 @@ class MainViewModel : ViewModel() {
     suspend fun addEntry(username: String, date: String, workingHours: Double, vacationDays: Int) {
         Log.d(TAG, "addEntry: Start adding entry for username: $username, date: $date")
 
-        val currentUser = User.getCurrentUser(username)
+        val currentUser = User.getCurrentUser()
         if (currentUser != null) {
             val updatedCalendarEntries = currentUser.calendarEntries.toMutableList()
             updatedCalendarEntries.add(CalendarEntry(date, workingHours, vacationDays))
@@ -125,7 +126,10 @@ class MainViewModel : ViewModel() {
 
             Log.d(TAG, "addEntry: Updated user object: $updatedUser")
 
-            User.updateUserInDatabase(updatedUser)
+            val currentUid = FirebaseAuth.getInstance().currentUser?.uid
+            if (currentUid != null) {
+                User.updateUserInDatabase(currentUid, updatedUser)
+            }
 
             // Update entry in calendarUtils
             calendarUtils.addEntry(date, workingHours, vacationDays)
@@ -133,6 +137,7 @@ class MainViewModel : ViewModel() {
             Log.d(TAG, "addEntry: Entry added successfully")
         }
     }
+
 
     fun deleteEntry(date: String, entry: CalendarEntry) {
         calendarUtils.deleteEntry(date, entry)
@@ -157,13 +162,12 @@ class MainViewModel : ViewModel() {
         val hoursWorked = (punchOut - punchIn) / (1000 * 60 * 60)
         this.hoursWorked.postValue(hoursWorked.toString())
     }
-    suspend fun addEntryToFirestore(username: String, date: String, workingHours: Double, vacationDays: Int) {
-        Log.d(TAG, "addEntryToFirestore: Passed username: $username")
-
-        val currentUser = User.getCurrentUser(username)
+    suspend fun addEntryToFirestore(date: String, workingHours: Double, vacationDays: Int) {
+        val currentUser = User.getCurrentUser()
         Log.d(TAG, "addEntryToFirestore: currentUser: $currentUser")
-
         currentUser?.addEntryToFirestore(date, workingHours, vacationDays)
     }
+
+
 
 }

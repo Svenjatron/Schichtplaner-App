@@ -57,7 +57,7 @@ data class User(
 
                     val userMap = toMap()
                     db.collection("users")
-                        .document(username)
+                        .document(task.result?.user?.uid!!)
                         .set(userMap)
                         .addOnSuccessListener {
                             Log.d(TAG, "saveUser: User data saved successfully to Firestore")
@@ -70,16 +70,27 @@ data class User(
                 }
             }
     }
-
     suspend fun updateUser(updatedUser: User) {
-        Log.d(TAG, "updateUser: Start updating user data for username: ${updatedUser.username}")
+        val currentUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (currentUid != null) {
+            Log.d(TAG, "updateUser: Start updating user data for UID: $currentUid")
 
-        db.collection("users")
-            .document(username)
-            .set(updatedUser.toMap())
-            .await()
+            FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(currentUid)
+                .set(updatedUser.toMap())
+                .addOnSuccessListener {
+                    Log.d(TAG, "updateUser: User data updated successfully")
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "updateUser: Error updating user data", e)
+                }
+                .await()
 
-        Log.d(TAG, "updateUser: User data updated successfully")
+            Log.d(TAG, "updateUser: Data update process completed")
+        } else {
+            Log.e(TAG, "updateUser: Current UID is null, cannot update user")
+        }
     }
 
     fun deleteUser() {
@@ -106,41 +117,41 @@ data class User(
     companion object {
         private const val TAG = "UserClass"
 
-        suspend fun getCurrentUser(username: String): User? {
-            Log.d(TAG, "getCurrentUser: Start fetching user data for username: $username")
+        suspend fun getCurrentUser(): User? {
+            val currentUid = FirebaseAuth.getInstance().currentUser?.uid
 
-            val currentUser = FirebaseAuth.getInstance().currentUser
+            if (currentUid != null) {
+                Log.d(TAG, "getCurrentUser: Start fetching user data for UID: $currentUid")
+                val snapshot = FirebaseFirestore.getInstance().collection("users")
+                    .document(currentUid).get().await()
 
-            if (currentUser == null) {
-                Log.d(TAG, "getCurrentUser: Current user is null")
-                return null
-            }
+                if (snapshot.exists()) {
+                    val user = snapshot.toObject(User::class.java)
 
-            Log.d(TAG, "getCurrentUser: Current user UID: ${currentUser.uid}")
-
-            val snapshot = FirebaseFirestore.getInstance()
-                .collection("users")
-                .document(currentUser.uid)
-                .get()
-                .await()
-
-            val user = snapshot.toObject(User::class.java)
-            if (user != null) {
-                Log.d(TAG, "getCurrentUser: User data fetched successfully: $user")
+                    if (user != null) {
+                        Log.d(TAG, "getCurrentUser: User data fetched successfully: $user")
+                        return user
+                    } else {
+                        Log.w(TAG, "getCurrentUser: Snapshot exists but unable to convert to User object.")
+                    }
+                } else {
+                    Log.w(TAG, "getCurrentUser: No data available for UID: $currentUid in Firestore.")
+                }
             } else {
-                Log.d(TAG, "getCurrentUser: User data is null")
+                Log.d(TAG, "getCurrentUser: Current user is null")
             }
 
-            return user
+            return null
         }
 
 
-        suspend fun updateUserInDatabase(updatedUser: User) {
-            Log.d(TAG, "updateUserInDatabase: Start updating user data for username: ${updatedUser.username}")
+
+        suspend fun updateUserInDatabase(uid: String, updatedUser: User) {
+            Log.d(TAG, "updateUserInDatabase: Start updating user data for UID: $uid")
 
             FirebaseFirestore.getInstance()
                 .collection("users")
-                .document(updatedUser.username)
+                .document(uid)
                 .set(updatedUser.toMap())
                 .addOnSuccessListener {
                     Log.d(TAG, "updateUserInDatabase: User data updated successfully")
@@ -163,15 +174,20 @@ data class User(
         val updatedUser = this.copy(calendarEntries = updatedCalendarEntries)
         Log.d(TAG, "addEntryToFirestore: Updated User: $updatedUser")
 
-        try {
-            Log.d(TAG, "addEntryToFirestore: Calling updateUserInDatabase")
-            updateUserInDatabase(updatedUser)
-            Log.d(TAG, "addEntryToFirestore: updateUserInDatabase called successfully")
-        } catch (e: Exception) {
-            Log.e(TAG, "addEntryToFirestore: Error updating user in database", e)
-        }
+        val currentUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (currentUid != null) {
+            try {
+                Log.d(TAG, "addEntryToFirestore: Calling updateUserInDatabase")
+                updateUserInDatabase(currentUid, updatedUser)
+                Log.d(TAG, "addEntryToFirestore: updateUserInDatabase called successfully")
+            } catch (e: Exception) {
+                Log.e(TAG, "addEntryToFirestore: Error updating user in database", e)
+            }
 
-        Log.d(TAG, "addEntryToFirestore: Updated user sent to database")
+            Log.d(TAG, "addEntryToFirestore: Updated user sent to database")
+        } else {
+            Log.e(TAG, "addEntryToFirestore: Current user UID is null")
+        }
     }
 
 }
