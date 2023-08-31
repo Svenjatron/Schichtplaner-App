@@ -155,19 +155,15 @@ class MainViewModel : ViewModel() {
         calendarUtils.clearEntries()
     }
 
-    fun updatePunchInAndOutTimes(punchIn: Long, punchOut: Long) {
-        punchInTime.postValue(punchIn)
-        punchOutTime.postValue(punchOut)
-
-        val hoursWorked = (punchOut - punchIn) / (1000 * 60 * 60)
-        this.hoursWorked.postValue(hoursWorked.toString())
-    }
     suspend fun addEntryToFirestore(date: String, workingHours: Double, vacationDays: Int) {
         val currentUser = User.getCurrentUser()
         Log.d(TAG, "addEntryToFirestore: currentUser: $currentUser")
         currentUser?.addEntryToFirestore(date, workingHours, vacationDays)
     }
 
-
-
 }
+
+
+
+
+

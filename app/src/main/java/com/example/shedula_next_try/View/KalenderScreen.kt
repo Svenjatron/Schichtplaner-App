@@ -24,137 +24,137 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 
 
-@Composable
-fun KalenderScreen(viewModel: MainViewModel) {
-    val navController = LocalNavController.current
-    val context = LocalContext.current
+    @Composable
+    fun KalenderScreen(viewModel: MainViewModel) {
+        val navController = LocalNavController.current
+        val context = LocalContext.current
 
-    val selectedDate = remember { mutableStateOf<LocalDate?>(null) }
-    val dateSelected = remember { mutableStateOf(false) }
-    val showDialog = remember { mutableStateOf(false) }
+        val selectedDate = remember { mutableStateOf<LocalDate?>(null) }
+        val dateSelected = remember { mutableStateOf(false) }
+        val showDialog = remember { mutableStateOf(false) }
 
-    val enteredWorkingHours = remember { mutableStateOf(TextFieldValue()) }
-    val enteredVacationDays = remember { mutableStateOf(TextFieldValue()) }
+        val enteredWorkingHours = remember { mutableStateOf(TextFieldValue()) }
+        val enteredVacationDays = remember { mutableStateOf(TextFieldValue()) }
 
-    val viewModelScope = rememberCoroutineScope()
+        val viewModelScope = rememberCoroutineScope()
 
-    // DatePicker wird beim Aufrufen direkt angezeigt
-    LaunchedEffect(Unit) {
-        showDatePicker(context, selectedDate, showDialog, onDialogCancel = {navController.navigate("EmployeeScreen")}, dateSelected = dateSelected)
-    }
-
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-
-        if (showDialog.value) {
-            ShowEntryDialog(
-                onDismiss = {
-                    navController.navigate("KalenderScreen")
-                },
-                enteredWorkingHours,
-                enteredVacationDays,
-                onConfirm = {
-                    val hours = enteredWorkingHours.value.text.toDoubleOrNull() ?: 0.0
-                    val days = enteredVacationDays.value.text.toIntOrNull() ?: 0
-                    val currentUser = FirebaseAuth.getInstance().currentUser
-                    val uid = currentUser?.uid ?: ""
-                    val date = selectedDate.value?.toString() ?: ""
-
-                    viewModelScope.launch {
-                        viewModel.addEntryToFirestore(date, hours, days)
-                    }
-
-                    enteredWorkingHours.value = TextFieldValue("")
-                    enteredVacationDays.value = TextFieldValue("")
-                    showDialog.value = false
-                    dateSelected.value = false
-                    navController.navigate("KalenderScreen")
-
-                }
-            )
+        // DatePicker wird beim Aufrufen direkt angezeigt
+        LaunchedEffect(Unit) {
+            showDatePicker(context, selectedDate, showDialog, onDialogCancel = {navController.navigate("EmployeeScreen")}, dateSelected = dateSelected)
         }
 
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+
+            if (showDialog.value) {
+                ShowEntryDialog(
+                    onDismiss = {
+                        navController.navigate("KalenderScreen")
+                    },
+                    enteredWorkingHours,
+                    enteredVacationDays,
+                    onConfirm = {
+                        val hours = enteredWorkingHours.value.text.toDoubleOrNull() ?: 0.0
+                        val days = enteredVacationDays.value.text.toIntOrNull() ?: 0
+                        val currentUser = FirebaseAuth.getInstance().currentUser
+                        val uid = currentUser?.uid ?: ""
+                        val date = selectedDate.value?.toString() ?: ""
+
+                        viewModelScope.launch {
+                            viewModel.addEntryToFirestore(date, hours, days)
+                        }
+
+                        enteredWorkingHours.value = TextFieldValue("")
+                        enteredVacationDays.value = TextFieldValue("")
+                        showDialog.value = false
+                        dateSelected.value = false
+                        navController.navigate("KalenderScreen")
+
+                    }
+                )
+            }
+
+        }
     }
-}
 
-@Composable
-fun ShowEntryDialog(
-    onDismiss: () -> Unit,
-    enteredWorkingHours: MutableState<TextFieldValue>,
-    enteredVacationDays: MutableState<TextFieldValue>,
-    onConfirm: () -> Unit
-) {
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties()) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Arbeitszeit (Stunden) unter dem Text eintragen:")
-            BasicTextField(
-                value = enteredWorkingHours.value,
-                onValueChange = { enteredWorkingHours.value = it },
-                Modifier.background(Color.White)
-            )
+    @Composable
+    fun ShowEntryDialog(
+        onDismiss: () -> Unit,
+        enteredWorkingHours: MutableState<TextFieldValue>,
+        enteredVacationDays: MutableState<TextFieldValue>,
+        onConfirm: () -> Unit
+    ) {
+        Dialog(onDismissRequest = onDismiss, properties = DialogProperties()) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(text = "Arbeitszeit (Stunden) unter dem Text eintragen:")
+                BasicTextField(
+                    value = enteredWorkingHours.value,
+                    onValueChange = { enteredWorkingHours.value = it },
+                    Modifier.background(Color.White)
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = "Urlaubstage unter dem Text eintragen:")
-            BasicTextField(
-                value = enteredVacationDays.value,
-                onValueChange = { enteredVacationDays.value = it },
-                Modifier.background(Color.White)
+                Text(text = "Urlaubstage unter dem Text eintragen:")
+                BasicTextField(
+                    value = enteredVacationDays.value,
+                    onValueChange = { enteredVacationDays.value = it },
+                    Modifier.background(Color.White)
 
-            )
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Button(
-                    onClick = onDismiss,
-                    colors = ButtonDefaults.buttonColors(containerColor = unserOcker)
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Zurück")
-                }
+                    Button(
+                        onClick = onDismiss,
+                        colors = ButtonDefaults.buttonColors(containerColor = unserOcker)
+                    ) {
+                        Text("Zurück")
+                    }
 
-                Button(
-                    onClick = onConfirm,
-                    colors = ButtonDefaults.buttonColors(containerColor = unserOcker)
-                ) {
-                    Text("Eintragen")
+                    Button(
+                        onClick = onConfirm,
+                        colors = ButtonDefaults.buttonColors(containerColor = unserOcker)
+                    ) {
+                        Text("Eintragen")
+                    }
                 }
             }
         }
     }
-}
 
-fun showDatePicker(
-    context: android.content.Context,
-    selectedDate: MutableState<LocalDate?>,
-    showDialog: MutableState<Boolean>,
-    onDialogCancel: ()-> Unit,
-    dateSelected: MutableState<Boolean>
-) {
-    val calendar = Calendar.getInstance()
-    val dialog = DatePickerDialog(
-        context,
-        R.style.CustomDatePickerDialogTheme,
-        { _, year, month, dayOfMonth ->
-            val date = LocalDate.of(year, month + 1, dayOfMonth)
-            selectedDate.value = date
-            dateSelected.value = true
-            showDialog.value = true
-        },
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
-        calendar.get(Calendar.DAY_OF_MONTH)
-    )
-    dialog.setOnCancelListener {
-        if (!dateSelected.value) {
-            onDialogCancel()
-            Log.d("DatePicker", "DatePicker wurde abgebrochen.")
+    fun showDatePicker(
+        context: android.content.Context,
+        selectedDate: MutableState<LocalDate?>,
+        showDialog: MutableState<Boolean>,
+        onDialogCancel: ()-> Unit,
+        dateSelected: MutableState<Boolean>
+    ) {
+        val calendar = Calendar.getInstance()
+        val dialog = DatePickerDialog(
+            context,
+            R.style.CustomDatePickerDialogTheme,
+            { _, year, month, dayOfMonth ->
+                val date = LocalDate.of(year, month + 1, dayOfMonth)
+                selectedDate.value = date
+                dateSelected.value = true
+                showDialog.value = true
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        dialog.setOnCancelListener {
+            if (!dateSelected.value) {
+                onDialogCancel()
+                Log.d("DatePicker", "DatePicker wurde abgebrochen.")
+            }
         }
+
+
+        dialog.show()
     }
-
-
-    dialog.show()
-}
 
